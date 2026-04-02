@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { ensureAuthenticated, ensureRoles } from '../middleware/authMiddleware.js';
-import { registerController, loginController } from '../controllers/authController.js';
+import { registerController, loginController, seedAdminController } from '../controllers/authController.js';
 import {
     createPatientHandler,
     updatePatientHandler,
@@ -56,6 +56,8 @@ if (process.env.NODE_ENV === 'test') {
 }
 // Removendo restrição de autenticação para login
 router.post('/auth/login', loginController);
+// Public endpoint to seed the first admin user; blocked once any root user exists
+router.post('/auth/seed-admin', seedAdminController);
 
 // Users - alias para register com permissões
 if (process.env.NODE_ENV === 'test') {
