@@ -5,6 +5,7 @@ import { createUser } from '../../infrastructure/repositories/user-repositories/
 import { createDoctor } from '../../infrastructure/repositories/doctor-repositories/doctor.repository.write.js';
 import { createPatient } from '../../infrastructure/repositories/patient-repositories/patient.repository.write.js';
 import { User } from '../../infrastructure/schemas/user.schema.js';
+import { hasRootUser } from '../../infrastructure/repositories/user-repositories/user.repository.read.js';
 import { AppError } from '../error/customErros.js';
 import { JWT_SECRET } from '../../config/env.js';
 
@@ -97,4 +98,13 @@ export async function loginService({ email, password }) {
     delete user.passwordHash;
 
     return { user, token };
+}
+
+export async function seedAdminService({ name, email, password }) {
+    const rootExists = await hasRootUser();
+    if (rootExists) {
+        throw new AppError('Admin user already exists. Seed is no longer available.', 403);
+    }
+
+    return registerService({ name, email, password, role: 'root' });
 }

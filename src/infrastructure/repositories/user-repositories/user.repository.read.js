@@ -54,3 +54,12 @@ export async function getUserByRole(role, page = 1, limit = 10) {
         throw new AppError(error.message, 500);
     }
 }
+
+export async function hasRootUser() {
+    try {
+        const rootUser = await User.findOne({ role: 'root' });
+        return rootUser !== null;
+    } catch (error) {
+        throw new AppError(error.message, 500);
+    }
+}
